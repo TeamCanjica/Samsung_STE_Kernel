@@ -39,7 +39,7 @@
 #ifdef CONFIG_FB_MCDE
 
 #define PRCMU_DPI_CLK_SHARP_FREQ	30720000
-#define PRCMU_DPI_CLK_SMD_FREQ		62400000
+#define PRCMU_DPI_CLK_SMD_FREQ		24960000
 
 enum {
 	PRIMARY_DISPLAY_ID,
@@ -443,13 +443,13 @@ int __init init_codina_display_devices(void)
 
 	/* MCDE pixelfetchwtrmrk levels per overlay */
 	{
-#if 1
-/*
-	 * The pixel fetcher FIFO is 128*64bit = 8192bits = 1024bytes.
-	 * Overlay 0 is assumed 32bpp and overlay 1 is assumed 16bpp
-	 */
-    pdata->pixelfetchwtrmrk[0] = 160; /* 160 -> 160px*32bpp/8=640bytes */
-	pdata->pixelfetchwtrmrk[1] = 192; /* 192 -> 192px*16bpp/8=384bytes */
+
+#if 1 /* 16 bit overlay */
+#define BITS_PER_WORD (4 * 64)
+	u32 fifo = (1024*8 - 8 * BITS_PER_WORD) / 3;
+	fifo &= ~(BITS_PER_WORD - 1);
+	pdata->pixelfetchwtrmrk[0] = fifo * 2 / 32;	/* LCD 32bpp */
+	pdata->pixelfetchwtrmrk[1] = fifo * 1 / 16;	/* LCD 16bpp */
 #else /* 24 bit overlay */
 	u32 fifo = (1024*8 - 8 * BITS_PER_WORD) / 7;
 	fifo &= ~(BITS_PER_WORD - 1);
@@ -466,7 +466,7 @@ int __init init_codina_display_devices(void)
 		codina_dpi_pri_display_info.video_mode.hfp = 8;
 		codina_dpi_pri_display_info.video_mode.vsw = 2;
 		codina_dpi_pri_display_info.video_mode.vbp = 8;
-		codina_dpi_pri_display_info.video_mode.vfp = 18;
+		codina_dpi_pri_display_info.video_mode.vfp = 8;
 		codina_dpi_pri_display_info.sleep_out_delay = 50;
 	} else {
 		generic_display0.name = LCD_DRIVER_NAME_S6D27A1;
@@ -478,7 +478,7 @@ int __init init_codina_display_devices(void)
 		codina_dpi_pri_display_info.video_mode.vfp = 10;
 		codina_dpi_pri_display_info.sleep_out_delay = 120;
 	}
-	
+
 	ret = mcde_display_device_register(&generic_display0);
 	if (ret)
 		pr_warning("Failed to register generic display device 0\n");
@@ -487,7 +487,7 @@ int __init init_codina_display_devices(void)
 	dpi_pins = ux500_pins_get("mcde-dpi");
 	if (!dpi_pins)
 		return -EINVAL;
-error:
+
 	return ret;
 }
 
