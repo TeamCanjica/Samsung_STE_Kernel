@@ -19,6 +19,7 @@
 #include <linux/workqueue.h>
 #include <linux/cpu.h>
 #include <linux/init.h>
+#include <linux/slab.h>
 #include <linux/cpufreq.h>
 #include <linux/input.h>
 #include <linux/hrtimer.h>
