@@ -119,6 +119,10 @@ static struct dbs_tuners {
 	.boost_timeout = 0,
 };
 
+extern u64 last_input_time;
+extern unsigned int input_boost_ms;
+extern unsigned int input_boost_freq;
+
 /*
  * A corner case exists when switching io_is_busy at run-time: comparing idle
  * times from a non-io_is_busy period to an io_is_busy period (or vice-versa)
@@ -452,6 +456,8 @@ static void dbs_check_cpu(struct cpu_dbs_info_s *this_dbs_info)
 	struct cpufreq_policy *policy;
 	unsigned int i, j;
 
+	bool boosted = ktime_to_us(ktime_get()) < (last_input_time + input_boost_ms * 1000);
+
 	policy = this_dbs_info->cur_policy;
 
 	/*
@@ -555,6 +561,13 @@ static void dbs_check_cpu(struct cpu_dbs_info_s *this_dbs_info)
 		if (policy->cur < policy->max)
 			__cpufreq_driver_target(policy, policy->max,
 					CPUFREQ_RELATION_H);
+
+		goto out;
+	}
+
+	if (boosted) {
+		if (policy->cur < input_boost_freq)
+			__cpufreq_driver_target(policy, input_boost_freq, CPUFREQ_RELATION_H);
 
 		goto out;
 	}
