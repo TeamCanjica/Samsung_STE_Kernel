@@ -1141,21 +1141,22 @@ static int liveopp_start = 0;
 
 static struct liveopp_arm_table liveopp_arm[] = {
 #ifdef CONFIG_MACH_CODINA
-	{ 100000,   99840,  ARM_EXTCLK, SET_EXT, 0x582,   NOCHG, 0x00050168, SET_VOLT, 0x0C, 0x18, 0xDB,  -1,  -1},
-	{ 200000,  199680,  ARM_EXTCLK,   NOCHG, 0x581,   NOCHG, 0x00050168, SET_VOLT, 0x0C, 0x18, 0xDB,  -1,  -1},
-	{ 300000,  299520,  ARM_50_OPP,   NOCHG, 0x741, SET_PLL, 0x00050127, SET_VOLT, 0x0C, 0x18, 0xDB,  -1,  -1},
-	{ 400000,  399360,  ARM_50_OPP,   NOCHG, 0x741, SET_PLL, 0x01050168, SET_VOLT, 0x0C, 0x18, 0xDB,  -1,  -1},
-	{ 500000,  499200,  ARM_50_OPP,   NOCHG, 0x741, SET_PLL, 0x0001010D, SET_VOLT, 0x0C, 0x20, 0xDB,  -2,  -2},
-	{ 600000,  599040,  ARM_50_OPP,   NOCHG, 0x741, SET_PLL, 0x0005014E, SET_VOLT, 0x0C, 0x20, 0xDB,  -2,  -2},
-	{ 700000,  698880,  ARM_50_OPP,   NOCHG, 0x741, SET_PLL, 0x0005015B, SET_VOLT, 0x0C, 0x24, 0xDB,  -2,  -2},
-	{ 800000,  798720, ARM_100_OPP,   NOCHG, 0x741, SET_PLL, 0x00050168,    NOCHG, 0x0B, 0x24, 0xDB,  -2,  -2},
-	{ 900000,  898560, ARM_100_OPP,   NOCHG, 0x741, SET_PLL, 0x00050175, SET_VOLT, 0x0B, 0x2F, 0xDB,  -2,  -2},
-	{1000000,  998400, ARM_100_OPP,   NOCHG, 0x741, SET_PLL, 0x0001011A,    NOCHG, 0x0B, 0x2F, 0xDB,  -2,  -2},
-	{1050000, 1049600, ARM_MAX_OPP,   NOCHG, 0x741, SET_PLL, 0x00030152, SET_VOLT, 0x0B, 0x32, 0xDB,  -2,  -2},
-	{1100000, 1100800, ARM_MAX_OPP,   NOCHG, 0x741, SET_PLL, 0x00030156, SET_VOLT, 0x0B, 0x36, 0x8F,  -2,  -2},
-	{1150000, 1152000, ARM_MAX_OPP,   NOCHG, 0x741, SET_PLL, 0x0001011E, SET_VOLT, 0x0B, 0x36, 0x8F,  -2,  -2},
-	{1200000, 1200000, ARM_MAX_OPP,   NOCHG, 0x741, SET_PLL, 0x0004017D, SET_VOLT, 0x0B, 0x39, 0x8F,  -2,  -2},
-	{1250000, 1248800, ARM_MAX_OPP,   NOCHG, 0x741, SET_PLL, 0x00040182, SET_VOLT, 0x0B, 0x39, 0x8F,  -2,  -2},
+//     freq_show, f_raw                                                             varm_sel, varm, vbbx, ddr, ape
+	{100000,    99840, ARM_EXTCLK,  SET_EXT, 0x582, NOCHG,   0x00050168, SET_VOLT, 0x0C, 0x18, 0xDB,   25,  25},
+	{200000,   199680, ARM_EXTCLK,  SET_EXT, 0x581, NOCHG,   0x00050168, SET_VOLT, 0x0C, 0x18, 0xDB,   25,  25},
+	{300000,   299520, ARM_50_OPP,  NOCHG,   0x741, SET_PLL, 0x0105014E, SET_VOLT, 0x0C, 0x18, 0xDB,   25,  25},
+	{400000,   399360, ARM_50_OPP,  NOCHG,   0x741, SET_PLL, 0x01050168, SET_VOLT, 0x0C, 0x18, 0xDB,   25,  50},
+	{500000,   499200, ARM_50_OPP,  NOCHG,   0x741, SET_PLL, 0x01050182, SET_VOLT, 0x0C, 0x20, 0xDB,   25,  50},
+	{600000,   599040, ARM_50_OPP,  NOCHG,   0x741, SET_PLL, 0x0105019C, SET_VOLT, 0x0C, 0x20, 0xDB,   50,  50},
+	{700000,   698880, ARM_50_OPP,  NOCHG,   0x741, SET_PLL, 0x010501B6, SET_VOLT, 0x0C, 0x24, 0xDB,   50,  50},
+	{800000,   798720, ARM_100_OPP, NOCHG,   0x741, SET_PLL, 0x00050168, SET_VOLT, 0x0B, 0x24, 0xDB,  100,  50},
+	{900000,   898560, ARM_100_OPP, NOCHG,   0x741, SET_PLL, 0x00050175, SET_VOLT, 0x0B, 0x2F, 0xDB,  100, 100},
+	{1000000,  998400, ARM_100_OPP, NOCHG,   0x741, SET_PLL, 0x0001011A, SET_VOLT, 0x0B, 0x2F, 0xDB,  100, 100},
+	{1050000, 1049600, ARM_100_OPP, NOCHG,   0x741, SET_PLL, 0x00030152, SET_VOLT, 0x0B, 0x32, 0xDB,  100, 100},
+	{1100000, 1100800, ARM_100_OPP, NOCHG,   0x741, SET_PLL, 0x00030156, SET_VOLT, 0x0B, 0x36, 0x8F,  100, 100},
+	{1150000, 1152000, ARM_100_OPP, NOCHG,   0x741, SET_PLL, 0x0001011E, SET_VOLT, 0x0B, 0x36, 0x8F,  100, 100},
+	{1200000, 1200000, ARM_100_OPP, NOCHG,   0x741, SET_PLL, 0x0004017D, SET_VOLT, 0x0B, 0x39, 0x8F,  100, 100},
+	{1250000, 1248000, ARM_100_OPP, NOCHG,   0x741, SET_PLL, 0x00040182, SET_VOLT, 0x0B, 0x39, 0x8F,  100, 100},
 #else
 	{ 100000,   99840,  ARM_EXTCLK, SET_EXT, 0x582,   NOCHG, 0x00050168, SET_VOLT, 0x0C, 0x12, 0xDB,  25,  25},
 	{ 200000,  199680,  ARM_EXTCLK, SET_EXT, 0x581,   NOCHG, 0x00050168, SET_VOLT, 0x0C, 0x12, 0xDB,  25,  25},
@@ -1225,13 +1226,13 @@ static inline void liveopp_set_armvolt(struct liveopp_arm_table table)
 static inline void liveopp_set_armpll(struct liveopp_arm_table table)
 {
 	/* ARM PLL */
-	db8500_prcmu_writel(PRCMU_PLLARM_REG, table.pllarm_raw);
+	db8500_prcmu_writel_relaxed(PRCMU_PLLARM_REG, table.pllarm_raw);
 }
 
 static inline void liveopp_set_armext(struct liveopp_arm_table table)
 {
 	/* ArmFixClk */
-	db8500_prcmu_writel(PRCMU_ARMFIX_REG, table.extarm_raw);
+	db8500_prcmu_writel_relaxed(PRCMU_ARMFIX_REG, table.extarm_raw);
 }
 
 static inline void liveopp_update_arm(struct liveopp_arm_table table, bool voltage_first)
