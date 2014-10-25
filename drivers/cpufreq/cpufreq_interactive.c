@@ -123,9 +123,11 @@ static int boostpulse_duration_val = DEFAULT_MIN_SAMPLE_TIME;
 /* End time of boost pulse in ktime converted to usecs */
 static u64 boostpulse_endtime;
 
+#ifdef CONFIG_U8500_HOTPLUG
 extern u64 last_input_time;
 extern unsigned int input_boost_ms;
 extern unsigned int input_boost_freq;
+#endif
 
 /*
  * Max additional time to wait in idle, beyond timer_rate, at speeds above
@@ -373,7 +375,11 @@ static void cpufreq_interactive_timer(unsigned long data)
 	loadadjfreq = (unsigned int)cputime_speedadj * 100;
 	cpu_load = loadadjfreq / pcpu->target_freq;
 	pcpu->prev_load = cpu_load;
+#ifdef CONFIG_U8500_HOTPLUG
 	boosted = boost_val || now < boostpulse_endtime || now < (last_input_time + input_boost_ms * 1000);
+#else
+	boosted = boost_val || now < boostpulse_endtime;
+#endif
 	boosted_freq = max(hispeed_freq, pcpu->policy->min);
 
 	if (go_hispeed_load && cpu_load >= go_hispeed_load) {
@@ -414,10 +420,12 @@ static void cpufreq_interactive_timer(unsigned long data)
 				new_freq = sync_freq;
 		}
 		
+#ifdef CONFIG_U8500_HOTPLUG
 		if (boosted) {
 			if (new_freq < input_boost_freq)
 				new_freq = input_boost_freq;
 		}
+#endif
 
 	}
 

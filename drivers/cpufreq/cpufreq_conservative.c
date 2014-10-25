@@ -98,9 +98,11 @@ static struct dbs_tuners {
 	.freq_step = 10,
 };
 
+#ifdef CONFIG_U8500_HOTPLUG
 extern u64 last_input_time;
 extern unsigned int input_boost_ms;
 extern unsigned int input_boost_freq;
+#endif
 
 static inline cputime64_t get_cpu_idle_time_jiffy(unsigned int cpu,
 							cputime64_t *wall)
@@ -336,7 +338,9 @@ static void dbs_check_cpu(struct cpu_dbs_info_s *this_dbs_info)
 
 	struct cpufreq_policy *policy;
 	unsigned int j;
+#ifdef CONFIG_U8500_HOTPLUG
 	bool boosted = ktime_to_us(ktime_get()) < (last_input_time + input_boost_ms * 1000);
+#endif
 
 	policy = this_dbs_info->cur_policy;
 
@@ -425,12 +429,14 @@ static void dbs_check_cpu(struct cpu_dbs_info_s *this_dbs_info)
 		return;
 	}
 
+#ifdef CONFIG_U8500_HOTPLUG
 	if (boosted) {
 		if (policy->cur < input_boost_freq)
 			__cpufreq_driver_target(policy, input_boost_freq, CPUFREQ_RELATION_H);
 
 		return;
 	}
+#endif
 	
 	/*
 	 * The optimal frequency is the frequency that is the lowest that
