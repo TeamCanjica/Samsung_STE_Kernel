@@ -120,9 +120,11 @@ static struct dbs_tuners {
 	.powersave_bias = 0,
 };
 
+#ifdef CONFIG_U8500_HOTPLUG
 extern u64 last_input_time;
 extern unsigned int input_boost_ms;
 extern unsigned int input_boost_freq;
+#endif
 
 static inline cputime64_t get_cpu_idle_time_jiffy(unsigned int cpu,
 							cputime64_t *wall)
@@ -435,7 +437,9 @@ static void dbs_check_cpu(struct cpu_dbs_info_s *this_dbs_info)
 	unsigned int max_load_freq;
 	struct cpufreq_policy *policy;
 	unsigned int j;
+#ifdef CONFIG_U8500_HOTPLUG
 	bool boosted = ktime_to_us(ktime_get()) < (last_input_time + input_boost_ms * 1000);
+#endif
 
 	this_dbs_info->freq_lo = 0;
 	policy = this_dbs_info->cur_policy;
@@ -530,12 +534,14 @@ static void dbs_check_cpu(struct cpu_dbs_info_s *this_dbs_info)
 		return;
 	}
 
+#ifdef CONFIG_U8500_HOTPLUG
 	if (boosted) {
 		if (policy->cur < input_boost_freq)
 			dbs_freq_increase(policy, input_boost_freq);
 
 		return;
 	}
+#endif
 
 	/* Check for frequency decrease */
 	/* if we cannot reduce the frequency anymore, break out early */

@@ -119,9 +119,11 @@ static struct dbs_tuners {
 	.boost_timeout = 0,
 };
 
+#ifdef CONFIG_U8500_HOTPLUG
 extern u64 last_input_time;
 extern unsigned int input_boost_ms;
 extern unsigned int input_boost_freq;
+#endif
 
 /*
  * A corner case exists when switching io_is_busy at run-time: comparing idle
@@ -456,7 +458,9 @@ static void dbs_check_cpu(struct cpu_dbs_info_s *this_dbs_info)
 	struct cpufreq_policy *policy;
 	unsigned int i, j;
 
+#ifdef CONFIG_U8500_HOTPLUG
 	bool boosted = ktime_to_us(ktime_get()) < (last_input_time + input_boost_ms * 1000);
+#endif
 
 	policy = this_dbs_info->cur_policy;
 
@@ -565,12 +569,14 @@ static void dbs_check_cpu(struct cpu_dbs_info_s *this_dbs_info)
 		goto out;
 	}
 
+#ifdef CONFIG_U8500_HOTPLUG
 	if (boosted) {
 		if (policy->cur < input_boost_freq)
 			__cpufreq_driver_target(policy, input_boost_freq, CPUFREQ_RELATION_H);
 
 		goto out;
 	}
+#endif
 
 	/* check for frequency decrease */
 	if (avg_load < dbs_tuners_ins.down_threshold) {
